@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title> CG_HW01 </title>
+        <title> CG_HW01_63130192 </title>
         <script type="text/javascript" src="./script.js"></script>
     </head>
 
@@ -11,11 +11,15 @@
             <h2> Uros Polanc [63130192] </h2>
         </div>
         <div>
-            <textarea id="Text-Ins" rows="10" cols="50" placeholder="v 7 3 5" value=""></textarea>
-            <textarea id="Text-Out" rows="10" cols="50" placeholder="v 5 1 6" value=""></textarea>
+            <h4> Info: the first textarea is for input verteces, while the min and right textareas are readonly. <br> The mid one will display the transformation matrix, while the right one will display the transform points. </h4>
         </div>
         <div>
-            <button type="button" onclick="Demonstrate()"> Test Functions </button>
+            <textarea id="Text-Ins" rows="10" cols="30" placeholder="v 0 0 0" value=""></textarea>
+            <textarea id="Tran-Mat" readonly rows="10" cols="30" placeholder="Read Only" value=""></textarea>
+            <textarea id="Text-Out" readonly rows="10" cols="30" placeholder="Read Only" value=""></textarea>
+        </div>
+        <div>
+            <button type="button" onclick="PointManager()"> Test Functions </button>
         </div>
     </body>
 </html>
