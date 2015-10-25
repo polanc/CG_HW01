@@ -292,15 +292,12 @@ function Create_Transformation (matrix) {
     matrix.translate(a);
     matrix.rotate_x(b);
     matrix.translate(c);
-
-    matrix.display();
-
     matrix.translate(d);
     matrix.scale(e);
     matrix.rotate_y(f);
 
     return matrix;
-};
+}
 
 //****************************************************************************//
 
@@ -320,7 +317,6 @@ function PointManager () {
 //****************************************************************************//
 
 function Get_Values () {
-    Clean_Up();
     var Total = document.getElementById("Text-Ins").value;
     var Lines = Total.split(/\n/);
 
@@ -346,25 +342,26 @@ function Get_Values () {
 }
 
 function Demonstrate () {
-    var x = new Vector4f(1, 0, 0, 0);
-    var y = new Vector4f(0, 1, 0, 0);
-    var z = new Vector4f(0, 0, 1, 0);
-    var w = new Vector4f(0, 0, 0, 1);
+    var x, y, z, w;
+    var ID, TR, TM;
 
-    var ID = new Matrix4f(x, y, z, w);
-    var Trans = new Transformation(ID);
+    x = new Vector4f(1, 0, 0, 0);
+    y = new Vector4f(0, 1, 0, 0);
+    z = new Vector4f(0, 0, 1, 0);
+    w = new Vector4f(0, 0, 0, 1);
 
-    Trans = Create_Transformation(Trans);
+    ID = new Matrix4f(x, y, z, w);
+    TR = new Transformation(ID);
+    TR = Create_Transformation(TR);
+    TM = Matrix4f.prototype.transpose(TR.matrix);
 
-    var Temp = Matrix4f.prototype.transpose(Trans.matrix);
-
-    List_Of_Mat_Vectors.push(Temp.v1);
-    List_Of_Mat_Vectors.push(Temp.v2);
-    List_Of_Mat_Vectors.push(Temp.v3);
-    List_Of_Mat_Vectors.push(Temp.v4);
+    List_Of_Mat_Vectors.push(TM.v1);
+    List_Of_Mat_Vectors.push(TM.v2);
+    List_Of_Mat_Vectors.push(TM.v3);
+    List_Of_Mat_Vectors.push(TM.v4);
 
     for (var Index = 0; Index < List_Of_Ins_Vectors.length; Index++) {
-        var New_Vector = Matrix4f.prototype.multiply_vector(ID, List_Of_Ins_Vectors[Index]);
+        var New_Vector = Matrix4f.prototype.multiply_vector(TR.matrix, List_Of_Ins_Vectors[Index]);
         List_Of_Out_Vectors.push(New_Vector);
     }
 }
