@@ -21,44 +21,50 @@ Vector4f.prototype.negate = function (vector) {
     var x = 0 - vector.x;
     var y = 0 - vector.y;
     var z = 0 - vector.z;
+    var w = 0 + vector.w;
 
-    return (new Vector4f(x, y, z, 0));
+    return (new Vector4f(x, y, z, w));
 };
 
 Vector4f.prototype.add = function (vector_1, vector_2) {
     var x = vector_1.x + vector_2.x;
     var y = vector_1.y + vector_2.y;
     var z = vector_1.z + vector_2.z;
+    var w = 0;
 
-    return (new Vector4f(x, y, z, 0));
+    if (vector_1.w != 0 && vector_2.w != 0) {
+        w = 1;
+    }
+
+    return (new Vector4f(x, y, z, w));
 };
 
-Vector4f.prototype.product_scalar = function (vector, value) {
+Vector4f.prototype.scalarProduct = function (vector, value) {
     var x = value * vector.x;
     var y = value * vector.y;
     var z = value * vector.z;
+    var w = vector.w;
 
-    return (new Vector4f(x, y, z, 0));
+    return (new Vector4f(x, y, z, w));
 };
 
-Vector4f.prototype.product_dot_xyz = function (vector_1, vector_2) {
+Vector4f.prototype.dotProduct = function (vector_1, vector_2) {
     var x = vector_1.x * vector_2.x;
     var y = vector_1.y * vector_2.y;
     var z = vector_1.z * vector_2.z;
+    var w = 0;
 
-    return (x + y + z);
-};
-
-Vector4f.prototype.product_dot_xyzw = function (vector_1, vector_2) {
-    var x = vector_1.x * vector_2.x;
-    var y = vector_1.y * vector_2.y;
-    var z = vector_1.z * vector_2.z;
-    var w = vector_1.w * vector_2.w;
+    if (vector_1.w != 0 && vector_2.w != 0) {
+        w = vector_1.w * vector_2.w;
+    }
+    else {
+        w = 0;
+    }
 
     return (x + y + z + w);
 };
 
-Vector4f.prototype.product_cross = function (vector_1, vector_2) {
+Vector4f.prototype.crossProduct = function (vector_1, vector_2) {
     var x = vector_1.y * vector_2.z - vector_1.z * vector_2.y;
     var y = vector_1.z * vector_2.x - vector_1.x * vector_2.z;
     var z = vector_1.x * vector_2.y - vector_1.y * vector_2.x;
@@ -79,20 +85,21 @@ Vector4f.prototype.normalize = function (vector) {
     var x = vector.x / length;
     var y = vector.y / length;
     var z = vector.z / length;
+    var w = vector.w;
 
-    return (new Vector4f(x, y, z, 0));
+    return (new Vector4f(x, y, z, w));
 };
 
 Vector4f.prototype.project = function (vector_1, vector_2) {
-    var factor = Vector4f.prototype.product_dot(vector_1, vector_2);
+    var factor = Vector4f.prototype.dotProduct(vector_1, vector_2);
     var length = Math.pow(Vector4f.prototype.length(vector_2), 2);
     var scalar = factor / length;
 
     return (Vector4f.prototype.scale(vector_2, scalar));
 };
 
-Vector4f.prototype.angle_cos = function (vector_1, vector_2) {
-    var product = this.product_dot(vector_1, vector_2);
+Vector4f.prototype.cosPhi = function (vector_1, vector_2) {
+    var product = this.dotProduct(vector_1, vector_2);
     var lngth_1 = Vector4f.prototype.length(vector_1);
     var lngth_2 = Vector4f.prototype.length(vector_2);
 
@@ -139,52 +146,52 @@ Matrix4f.prototype.transpose = function (matrix) {
     return (new Matrix4f(x, y, z, w));
 };
 
-Matrix4f.prototype.multiply_scalar = function (matrix, value) {
-    var x = Vector4f.prototype.product_scalar(matrix.v1, value);
-    var y = Vector4f.prototype.product_scalar(matrix.v2, value);
-    var z = Vector4f.prototype.product_scalar(matrix.v3, value);
-    var w = Vector4f.prototype.product_scalar(matrix.v4, value);
+Matrix4f.prototype.multiplyScalar = function (matrix, value) {
+    var x = Vector4f.prototype.scalarProduct(matrix.v1, value);
+    var y = Vector4f.prototype.scalarProduct(matrix.v2, value);
+    var z = Vector4f.prototype.scalarProduct(matrix.v3, value);
+    var w = Vector4f.prototype.scalarProduct(matrix.v4, value);
 
     return (new Matrix4f(x, y, z, w));
 };
 
-Matrix4f.prototype.multiply_matrix = function (matrix_1, matrix_2) {
+Matrix4f.prototype.multiply = function (matrix_1, matrix_2) {
     var a, b, c, d, x, y, z, w, t;
 
     t = Matrix4f.prototype.transpose(matrix_1);
 
-    x = Vector4f.prototype.product_dot_xyzw(t.v1, matrix_2.v1);
-    y = Vector4f.prototype.product_dot_xyzw(t.v2, matrix_2.v1);
-    z = Vector4f.prototype.product_dot_xyzw(t.v3, matrix_2.v1);
-    w = Vector4f.prototype.product_dot_xyzw(t.v4, matrix_2.v1);
+    x = Vector4f.prototype.dotProduct(t.v1, matrix_2.v1);
+    y = Vector4f.prototype.dotProduct(t.v2, matrix_2.v1);
+    z = Vector4f.prototype.dotProduct(t.v3, matrix_2.v1);
+    w = Vector4f.prototype.dotProduct(t.v4, matrix_2.v1);
     a = new Vector4f(x, y, z, w);
 
-    x = Vector4f.prototype.product_dot_xyzw(t.v1, matrix_2.v2);
-    y = Vector4f.prototype.product_dot_xyzw(t.v2, matrix_2.v2);
-    z = Vector4f.prototype.product_dot_xyzw(t.v3, matrix_2.v2);
-    w = Vector4f.prototype.product_dot_xyzw(t.v4, matrix_2.v2);
+    x = Vector4f.prototype.dotProduct(t.v1, matrix_2.v2);
+    y = Vector4f.prototype.dotProduct(t.v2, matrix_2.v2);
+    z = Vector4f.prototype.dotProduct(t.v3, matrix_2.v2);
+    w = Vector4f.prototype.dotProduct(t.v4, matrix_2.v2);
     b = new Vector4f(x, y, z, w);
 
-    x = Vector4f.prototype.product_dot_xyzw(t.v1, matrix_2.v3);
-    y = Vector4f.prototype.product_dot_xyzw(t.v2, matrix_2.v3);
-    z = Vector4f.prototype.product_dot_xyzw(t.v3, matrix_2.v3);
-    w = Vector4f.prototype.product_dot_xyzw(t.v4, matrix_2.v3);
+    x = Vector4f.prototype.dotProduct(t.v1, matrix_2.v3);
+    y = Vector4f.prototype.dotProduct(t.v2, matrix_2.v3);
+    z = Vector4f.prototype.dotProduct(t.v3, matrix_2.v3);
+    w = Vector4f.prototype.dotProduct(t.v4, matrix_2.v3);
     c = new Vector4f(x, y, z, w);
 
-    x = Vector4f.prototype.product_dot_xyzw(t.v1, matrix_2.v4);
-    y = Vector4f.prototype.product_dot_xyzw(t.v2, matrix_2.v4);
-    z = Vector4f.prototype.product_dot_xyzw(t.v3, matrix_2.v4);
-    w = Vector4f.prototype.product_dot_xyzw(t.v4, matrix_2.v4);
+    x = Vector4f.prototype.dotProduct(t.v1, matrix_2.v4);
+    y = Vector4f.prototype.dotProduct(t.v2, matrix_2.v4);
+    z = Vector4f.prototype.dotProduct(t.v3, matrix_2.v4);
+    w = Vector4f.prototype.dotProduct(t.v4, matrix_2.v4);
     d = new Vector4f(x, y, z, w);
 
     return (new Matrix4f(a, b, c, d));
 };
 
-Matrix4f.prototype.multiply_vector = function (matrix, vector) {
-    var x = Vector4f.prototype.product_dot_xyzw(matrix.v1, vector);
-    var y = Vector4f.prototype.product_dot_xyzw(matrix.v2, vector);
-    var z = Vector4f.prototype.product_dot_xyzw(matrix.v3, vector);
-    var w = Vector4f.prototype.product_dot_xyzw(matrix.v4, vector);
+Matrix4f.prototype.multiplyVector = function (matrix, vector) {
+    var x = Vector4f.prototype.dotProduct(matrix.v1, vector);
+    var y = Vector4f.prototype.dotProduct(matrix.v2, vector);
+    var z = Vector4f.prototype.dotProduct(matrix.v3, vector);
+    var w = Vector4f.prototype.dotProduct(matrix.v4, vector);
 
     return (new Vector4f(x, y, z, w));
 };
@@ -210,7 +217,7 @@ Transformation.prototype.translate = function (vector) {
     var z = new Vector4f(0, 0, 1, 0);
     var w = new Vector4f(vector.x, vector.y, vector.z, vector.w);
 
-    this.matrix  = Matrix4f.prototype.multiply_matrix(this.matrix, new Matrix4f(x, y, z, w));
+    this.matrix  = Matrix4f.prototype.multiply(this.matrix, new Matrix4f(x, y, z, w));
 };
 
 Transformation.prototype.scale = function (vector) {
@@ -219,7 +226,7 @@ Transformation.prototype.scale = function (vector) {
     var z = new Vector4f(0, 0, vector.z, 0);
     var w = new Vector4f(0, 0, 0, 1);
 
-    this.matrix  = Matrix4f.prototype.multiply_matrix(this.matrix, new Matrix4f(x, y, z, w));
+    this.matrix  = Matrix4f.prototype.multiply(this.matrix, new Matrix4f(x, y, z, w));
 };
 
 Transformation.prototype.rotate_x = function (value) {
@@ -228,7 +235,7 @@ Transformation.prototype.rotate_x = function (value) {
     var z = new Vector4f(0, -Math.sin(value), Math.cos(value), 0);
     var w = new Vector4f(0, 0, 0, 1);
 
-    this.matrix  = Matrix4f.prototype.multiply_matrix(this.matrix, new Matrix4f(x, y, z, w));
+    this.matrix  = Matrix4f.prototype.multiply(this.matrix, new Matrix4f(x, y, z, w));
 };
 
 Transformation.prototype.rotate_y = function (value) {
@@ -237,7 +244,7 @@ Transformation.prototype.rotate_y = function (value) {
     var z = new Vector4f(Math.sin(value), 0,  Math.cos(value), 0);
     var w = new Vector4f(0, 0, 0, 1);
 
-    this.matrix  = Matrix4f.prototype.multiply_matrix(this.matrix, new Matrix4f(x, y, z, w));
+    this.matrix  = Matrix4f.prototype.multiply(this.matrix, new Matrix4f(x, y, z, w));
 };
 
 Transformation.prototype.rotate_z = function (value) {
@@ -246,7 +253,7 @@ Transformation.prototype.rotate_z = function (value) {
     var z = new Vector4f(0, 0, 1, 0);
     var w = new Vector4f(0, 0, 0, 1);
 
-    this.matrix  = Matrix4f.prototype.multiply_matrix(this.matrix, new Matrix4f(x, y, z, w));
+    this.matrix  = Matrix4f.prototype.multiply(this.matrix, new Matrix4f(x, y, z, w));
 };
 
 Transformation.prototype.display = function () {
@@ -293,12 +300,17 @@ function Get_Values () {
 
         if (Chars[0] != "v") {
             Error_Check = 1;
-            alert("Input Missmatch At Line " + (Index + 1));
+            alert("Input Missmatch At Line " + (Index + 1) + ": Empty Line");
         }
         else {
             if (Is_Number(Chars[1]) && Is_Number(Chars[2]) && Is_Number(Chars[3])) {
                 Error_Check = 0;
-                List_Of_Ins_Vectors.push(new Vector4f(Chars[1], Chars[2], Chars[3], 1));
+
+                var X = parseFloat(Chars[1]);
+                var Y = parseFloat(Chars[2]);
+                var Z = parseFloat(Chars[3]);
+
+                List_Of_Ins_Vectors.push(new Vector4f(X, Y, Z, 1));
             }
             else {
                 Error_Check = 1;
@@ -306,6 +318,29 @@ function Get_Values () {
             }
         }
     }
+}
+
+function Generate () {
+    var Length = 10;
+    var Range = 10;
+
+    var Text = "";
+    var Size = 3;
+
+    for (var Index = 0; Index < Length; Index++) {
+        var CorX = Math.random() * Range;
+        var CorY = Math.random() * Range;
+        var CorZ = Math.random() * Range;
+
+        if (Index < Length - 1) {
+            Text = Text + "v " + Decimals(CorX, Size) + " " + Decimals(CorY, Size) + " " + Decimals(CorZ, Size) + "\n";
+        }
+        else {
+            Text = Text + "v " + Decimals(CorX, Size) + " " + Decimals(CorY, Size) + " " + Decimals(CorZ, Size);
+        }
+    }
+
+    document.getElementById("Text-Ins").value = Text;
 }
 
 function Demonstrate () {
@@ -327,7 +362,7 @@ function Demonstrate () {
     List_Of_Mat_Vectors.push(TM.v4);
 
     for (var Index = 0; Index < List_Of_Ins_Vectors.length; Index++) {
-        List_Of_Out_Vectors.push(Matrix4f.prototype.multiply_vector(TR.matrix, List_Of_Ins_Vectors[Index]));
+        List_Of_Out_Vectors.push(Matrix4f.prototype.multiplyVector(TR.matrix, List_Of_Ins_Vectors[Index]));
     }
 }
 
